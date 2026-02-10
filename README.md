@@ -39,7 +39,7 @@ rosetta 기반 애플 실리콘 환경 및
 ### 모델 생성
 
 `bin/rails generate model Product name:string` 명령을 통해,  
-string 타입의 name이라는 속성을 가진 Product 테이블을 생성할 수 있다.
+string 타입의 name이라는 속성을 가진 Product 테이블을 생성할 수 있습니다.
 
 실행 시 터미널에 로그가 나타나는데,  
 ```shell
@@ -51,7 +51,7 @@ Running via Spring preloader in process 81082
       create      test/models/product_test.rb
       create      test/fixtures/products.yml
 ```
-아래의 세 가지가 만들어진 것을 확인할 수 있다.
+아래의 세 가지가 만들어진 것을 확인할 수 있습니다.
 1. db/migrate 폴더 내에 마이그레이션 파일
 2. app/models 폴더 내에 ActiveRecord model 파일
 3. test, fixture 파일  
