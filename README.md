@@ -56,4 +56,41 @@ Running via Spring preloader in process 81082
 2. app/models 폴더 내에 ActiveRecord model 파일
 3. test, fixture 파일  
 
+> 모델의 이름은 단수형으로 작성합니다.  
+> 인스턴스화된 모델은 하나의 레코드를 나타내기 때문입니다.
+
+모델을 설정하고 나면, `bin/rails db:migrate`  
+명령을 통해 db에 변경 사항을 적용시킬 수 있습니다.
+
+> 실제 데이터베이스 테이블 이름은 복수형으로 생성됩니다.  
+> 테이블은 모든 레코드를 가지고 있기 때문입니다.
+
 ---
+
+### 콘솔
+
+`bin/rails console` 명령어를 통해,  
+복잡한 테스트 설정 없이 Rails 환경을 로드하고,  
+ruby 코드를 실행하며 상호작용할 수 있습니다. 
+
+```shell
+irb(main):006:0> Product.create name: "밥"
+  TRANSACTION (0.1ms)  begin transaction
+  Product Create (1.4ms)  INSERT INTO "products" ("name", "created_at", "updated_at") VALUES (?, ?, ?)  [["name", "밥"], ["created_at", "2026-02-10 07:37:12.584102"], ["updated_at", "2026-02-10 07:37:12.584102"]]
+  TRANSACTION (1.8ms)  commit transaction
+=> #<Product id: 3, name: "밥", created_at: "2026-02-10 07:37:12.584102000 +0000", updated_at: "2026-02-10 07:37:12.584102000 +0000">
+```
+위와같이 irb 세션에서 모델을 생성,조회,수정하는 등,  
+실제 애플리케이션 환경과 동일한 조건에서 코드를 실험해볼 수 있습니다.
+
+---
+
+### CRUD
+
+```ruby
+
+# name = "밥" 을 가진 Product객체를 생성합니다.
+product = Product.new(name: "밥")
+
+
+```
