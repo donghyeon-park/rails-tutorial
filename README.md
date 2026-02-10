@@ -89,8 +89,43 @@ irb(main):006:0> Product.create name: "밥"
 
 ```ruby
 
-# name = "밥" 을 가진 Product객체를 생성합니다.
+# name = "밥" 을 가진 Product객체를 생성하고, 
+# product 변수에 할당합니다.
 product = Product.new(name: "밥")
+# => #<Product id: nil, name: "밥", created_at: nil, updated_at: nil>
 
+# product를 저장합니다.
+product.save
+# => #<Product id: 5, name: "김치", created_at: "2026-02-10 07:52:21.469821000 +0000", updated_at: "2026-02-10 07:52:21.469821000 +0000">
 
+# create를 통해 할당 없이 바로 생성할 수도 있습니다. 
+Product.create(name: "국")
+
+# 전체를 조회합니다.
+Product.all
+# => #<ActiveRecord::Relation [#<Product id: 1, name: "밥", created_at: "2026-02-10 07:56:23.351629000 +0000", updated_at: "2026-02-10 07:56:23.351629000 +0000">, #<Product id: 2, name: "국", created_at: "2026-02-10 07:56:29.458875000 +0000", updated_at: "2026-02-10 07:56:29.458875000 +0000">]>
+
+# 특정 조건을 조회합니다.
+Product.where(name: "밥")
+Product.where(name: "김")
+# 없는 값을 조회 시 에러가 아닌 빈 레코드를 반환합니다.
+# => #<ActiveRecord::Relation []>
+
+# order 는 쿼리 뒤에 붙어서 정렬을 지원합니다. 
+Product.where(name: "밥").order(name: :asc)
+
+# Product.all.order(name: :desc) 와 동일합니다.
+Product.order(name: :desc)
+
+# id를 기준으로 하나의 레코드만 찾고 싶은 경우 find를 사용합니다.
+product = Product.find(1)
+# update 를 통해 값을 수정할 수 있습니다. 
+product.update(name: "면")
+
+# 객체의 인스턴스에 재할당하고, save하는 방식으로도 update를 구현할 수 있습니다.
+product.name = "고기"
+product.save
+
+# destroy를 통해 delete 할 수 있습니다.
+product.destroy
 ```
