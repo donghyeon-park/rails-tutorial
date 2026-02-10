@@ -129,3 +129,35 @@ product.save
 # destroy를 통해 delete 할 수 있습니다.
 product.destroy
 ```
+
+---
+
+### Validations
+
+```ruby
+# app/models/product.rb
+class Product < ApplicationRecord
+  validates :name, 
+            presence: true, 
+            uniqueness: true, 
+            length: { minimum: 2, maximum: 8 }
+end
+```
+위의 형태로 not null, unique, length 제약사항을 추가할 수 있다. 
+
+다시 콘솔에서,
+```ruby
+product = Product.new
+product.save # false
+
+product.name = "밥"
+product.save # false, "Name is too short (minimum is 2 characters)"
+
+product.name = "김밥"
+product.save # true
+
+Product.create(name: "김밥") # false, Name has already been taken
+Product.create(name: "국밥") # true
+
+Product.create(name: "알리오올리오파스타") # false, "Name is too long (maximum is 8 characters)"
+```
