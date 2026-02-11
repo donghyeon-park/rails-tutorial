@@ -531,6 +531,21 @@ Running via Spring preloader in process 34400
 == 20260211062542 CreateComments: migrated (0.0048s) ==========================
 ```
 
+그리고, 원래 있었던 `Product` 모델에  
+`has_many` 키워드를 통해 `Comment` 모델과의 연관관계를 설정합니다.
+```ruby
+class Product < ApplicationRecord
+  has_many :comments
+  
+  validates :name, 
+            presence: true, 
+            uniqueness: true, 
+            length: { minimum: 2, maximum: 8 }
+end
+```
+이렇게 정의하면 각 `Product`가 여러 개의 `Comment`를 가질 수 있다는 사실을 Rails가 인식하고,  
+두 모델 간의 관계를 올바르게 추적할 수 있게 됩니다.
+
 ---
 ### 연관 관계에서의 경로 설정
 
