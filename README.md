@@ -4,12 +4,13 @@
 
 ## 주요 철학
 
-Rails는 Django과 유사하게, 최선의 방식이 있다고 가정하고, 이를 유도하는 방식으로 설계되어 있다.
+Rails는 Django과 유사하게, '최선의 방식이 이미 정해져 있다'고 가정하고,  
+그 방식으로 개발자를 유도하는 방식으로 설계된 프레임워크입니다.
 
-그래서 'Rails의 방식'을 따라가는 경우 생산성이 오르지만,  
-다른 언어의 습관을 유지하는 경우 좋은 경험이 아닐 수 있다. 
+그래서 'Rails다운 방식'을 따라가는 경우 생산성이 높아지지만,  
+다른 언어나 프레임워크의 습관을 유지하는 경우 불편한 경험을 하게 될 수 있습니다.
 
-Rails는 아래의 두가지 핵심 원칙을 포함한다.
+Rails의 설계 철학은 아래의 두가지 핵심 원칙을 포함합니다.
 
 - DRY, Don't Repeat Yourself  
 - CoC, Convention over Configuration
@@ -216,7 +217,7 @@ end
 이 코드가 상기한 코드와 같은 동작을 합니다. 
 
 `bin/rails routes` 를 통해 생성된 경로들을 확인할 수 있습니다. 
-```
+```shell
       Prefix Verb   URI Pattern                                                                                       Controller#Action
     products GET    /products(.:format)                                                                               products#index
              POST   /products(.:format)                                                                               products#create
@@ -227,3 +228,62 @@ edit_product GET    /products/:id/edit(.:format)                                
              PUT    /products/:id(.:format)                                                                           products#update
              DELETE /products/:id(.:format)                                                                           products#destroy
 ```
+
+그리고, `root "models#action"` 를 통해 루트 페이지의 액션을 재설정할 수 있습니다. 
+```ruby
+Rails.application.routes.draw do
+  root "products#index"
+  resources :products
+end
+```
+
+---
+
+### Controller
+
+위에서 Controller 에 대한 설명을 했으나, 아직 파일이 존재하진 않는다.  
+Controller 또한 Rails에서 제공하는 명령어를 통해 간편하게 만들 수 있다. 
+
+`bin/rails generate controller Products index --skip-routes`  
+해당 명령은 'Products의 컨트롤러를 만들어줘. index action을 포함하고, routes 를 같이 만들지는 마.' 라는 뜻입니다.
+
+```shell
+Running via Spring preloader in process 77876
+      create  app/controllers/products_controller.rb
+      invoke  erb
+      create    app/views/products
+      create    app/views/products/index.html.erb
+      invoke  test_unit
+      create    test/controllers/products_controller_test.rb
+      invoke  helper
+      create    app/helpers/products_helper.rb
+      invoke    test_unit
+      invoke  assets
+      invoke    scss
+      create      app/assets/stylesheets/products.scss
+```
+명령 실행 시 위와 같이 controller, erb, test-unit, helper, scss 파일을 각각 만들어줍니다.
+
+```ruby
+# app/controllers/products_controller.rb
+class ProductsController < ApplicationController
+  def index
+    @products = Product.all
+  end
+end
+```
+
+``` ruby
+# views/products/index.html.erb
+<h1>Products</h1>
+
+<div id="products">
+  <% @products.each do |product| %>
+    <div>
+      <%= product.name %>
+    </div>
+  <% end %>
+</div>
+```
+위의 컨트롤러 코드에서는 `index` 액션에서 `Product`의 모든 레코드를 조회해 `@products` 인스턴스 변수에 담도록 설정했습니다.  
+아래의 ERB 템플릿에서는 이 `@products`를 순회하면서, 각 `product`의 `name`을 출력하는 방식으로 화면을 구성합니다.
