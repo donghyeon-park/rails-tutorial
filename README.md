@@ -431,3 +431,52 @@ edit은 create와 거의 같은 형태로 구성할 수 있습니다.
 ```
 
 ---
+
+#### Before Actions
+구현 중 `show`나 `edit`처럼  
+레코드를 조회하고 변수에 할당하는 행위가 중복해서 일어납니다. 
+
+중복을 줄이기 위해 `before_action` 을 사용할 수 있습니다. 
+
+```ruby
+class ProductsController < ApplicationController
+  before_action :set_product, only: %i[show edit update]
+
+  # ...
+
+  def show
+  end
+
+  def new
+    @product = Product.new
+  end
+
+  # ...
+
+  def edit
+  end
+  
+  def update
+    if @product.update(product_params)
+      redirect_to @product
+    else
+      render :edit, status: :unprocessable_entity
+    end
+  end
+
+  private
+    def set_product
+      @product = Product.find(params[:id])
+    end
+
+    # ...
+end
+```
+이전 코드에서 중복되었던  
+`show`와 `edit`, 그리고 `update`의 `@product` 조회 로직을  
+`set_product` 함수로 만들고, `before_actions` 정의를 통해  
+해당 함수 호출 시 `set_product`를 먼저 실행하도록 설정할 수 있다.  
+
+이는 python의 `decorator` 패턴과 유사하다.
+
+---
