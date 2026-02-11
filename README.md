@@ -480,3 +480,31 @@ end
 이는 python의 `decorator` 패턴과 유사하다.
 
 ---
+#### DELETE
+
+delete 또한 `@product`의 조회 로직이 필요하므로  
+`set_product`의 트리거에 넣어주고,  
+
+뷰에서 바인딩 하면 완성됩니다.
+
+```html
+# app/views/products/show.html.erb
+
+<h1>Product</h1>
+
+<div id="product">
+  <%= @product.name %>
+</div>
+
+<%= link_to "Edit", edit_product_path(@product) %>
+<%= link_to "Back to products", products_path %>
+<%= button_to "Delete", @product, method: :delete %>
+```
+여기서 공식 문서와 다른 점은,  
+공식 문서에서는 `data: { turbo_confirm: "Are you sure?" }`을 통해  
+확인 버튼은 만들었는데, 
+
+이 환경을 구성하기 위해 `webpacker`를 제거했고,  
+그 여파로 해당 로직이 제대로 작동하지 않아 우선 제거해두었습니다. 
+
+---
