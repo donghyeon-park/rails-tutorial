@@ -368,7 +368,7 @@ end
 형태로 컨트롤러에 액션을 추가해 새 인스턴스를 만들 수 있습니다. 
 
 ---
-### 에러 처리
+#### 에러 처리
 
 폼 입력 중 Validtion 등을 통해 백엔드 로직에서 에러가 발생하는 경우,  
 `form.object.errors`에서 에러를 찾을 수 있습니다. 
@@ -383,4 +383,38 @@ end
 <% end %>
 ```
 의 형태로 에러가 발생했을 시 화면에 표시해줄 수 있습니다. 
+
+#### partial
+Django/FE 에서의 component 개념과 동일하다.
+
+```html
+# app/views/products/_form.html.erb
+
+<%= form_with model: product do |form| %>
+  <% if form.object.errors.any? %>
+    <p class="error"><%= form.object.errors.full_messages.first %></p>
+  <% end %>
+
+  <div>
+    <%= form.label :name %>: <%= form.text_field :name %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>
+```
+로 선언해두면, 다른 뷰에서 해당 partial을 랜더링하는 방식으로 사용할 수 있다. 
+
+```html
+# app/views/products/new.html.erb
+
+<h1>New product</h1>
+
+<%= render "form", product: @product %>
+<%= link_to "Cancel", products_path %>
+```
+해당 방식으로 랜더링할 수 있고, 이를 통해 자주 사용하는 형태의 경우 재사용할 수 있다.
+
+---
 
