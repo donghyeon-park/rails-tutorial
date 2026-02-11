@@ -581,3 +581,71 @@ Rails는 products와 comments가 중첩 관계인 것을 확인하고,
 중첩된 경로가 자동으로 설정된 것을 확인할 수 있습니다.
 
 ---
+### Controller
+
+`bin/rails generate controller Comments` 를 통해 컨트롤러를 생성하고,  
+```ruby
+# app/controllers/comments_controller.rb
+
+class CommentsController < ApplicationController
+  def create
+    @product = Product.find(params[:product_id])
+    @comment = @product.comments.create(comment_params)
+    redirect_to product_path(@product)
+  end
+
+  private
+    def comment_params
+      params.require(:comment).permit(:author, :body)
+    end
+end
+```
+```html
+# app/views/products/show.html.erb
+
+<h1>Product</h1>
+
+<div id="product">
+  <%= @product.name %>
+</div>
+
+<%= link_to "Edit", edit_product_path(@product) %>
+<%= link_to "Back to products", products_path %>
+<%= button_to "Delete", @product, method: :delete %>
+
+<h2>Comments</h2>
+
+<% @product.comments.each do |comment| %>
+  <p>
+    <strong>작성자: </strong>
+    <%= comment.author %>
+  </p>
+  <p> 
+    <strong>Comemnt: </strong>
+    <%= comment.body %>
+  </p>
+<% end %>
+
+<h2>Add a Comment</h2>
+<%= form_with model: [ @product, @product.comments.build ] do |form| %>
+  <p>
+    <%= form.label :author %> <br>
+    <%= form.text_field :author %>
+  </p>
+
+  <p>
+    <%= form.label :body %> <br>
+    <%= form.text_area :body %>
+  </p>
+
+  <p>
+    <%= form.submit%>
+  </p>
+<% end %>
+```
+와 같이 작성해주었습니다. 
+
+이를 통해 `product`에 `comment`를 달고,  
+`product`가 가진 모든 `comment`를 조회할 수 있는 뷰를 생성할 수 있습니다.
+
+---

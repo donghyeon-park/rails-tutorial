@@ -7,3 +7,28 @@
 <%= link_to "Edit", edit_product_path(@product) %>
 <%= link_to "Back to products", products_path %>
 <%= button_to "Delete", @product, method: :delete %>
+
+<h2>Comments</h2>
+
+<% @product.comments.each do |comment| %>
+  <p>
+    <%= comment.author %>: <%= comment.body %>
+  </p>
+<% end %>
+
+<h2>Add a Comment</h2>
+<%= form_with model: [ @product, @product.comments.build ] do |form| %>
+  <p>
+    <%= form.label :author %> <br>
+    <%= form.text_field :author %>
+  </p>
+
+  <p>
+    <%= form.label :body %> <br>
+    <%= form.text_area :body %>
+  </p>
+
+  <p>
+    <%= form.submit%>
+  </p>
+<% end %>
