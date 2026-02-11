@@ -264,6 +264,8 @@ Running via Spring preloader in process 77876
 ```
 명령 실행 시 위와 같이 controller, erb, test-unit, helper, scss 파일을 각각 만들어줍니다.
 
+---
+
 ```ruby
 # app/controllers/products_controller.rb
 class ProductsController < ApplicationController
@@ -315,7 +317,53 @@ ERB 템플릿은 `<% %>` 를 통해 ruby 문법을 사용해서 뷰를 표현할
 ```
 그리고, `link_to` 헬퍼를 통해 더 깔끔하게 리팩토링 할 수 있습니다.
 
-
-
 ---
 
+create의 경우에도 동일한 방식으로 만들 수 있습니다 .
+
+```html
+<h1>New product</h1>
+
+<%= form_with model: @product do |form| %>
+  <div>
+    <%= form.label :name %>: <%= form.text_field :name %>
+  </div>
+
+  <p>
+    <%= form.submit %>
+  </p>
+
+<% end %>
+
+<%= link_to "Cancel", products_path %>
+```
+형태로 뷰를 구성하고, 
+
+```ruby
+class ProductsController < ApplicationController
+  # ...
+
+  def new
+    @product = Product.new
+  end
+
+  def create
+    @product = Product.new(product_params)
+    if @product.save
+      redirect_to @product
+    else
+      render :new, status: :unprocessable_entity
+    end
+  end
+
+  private
+    def product_params
+      # 해당 코드는 6.1.5.1 버전에서 사용되지 않음
+      # params.expect(product: [ :name ])
+      params.require(:product).permit(:name)
+    end
+end
+```
+형태로 컨트롤러에 액션을 추가해 새 인스턴스를 만들 수 있다. 
+
+---
