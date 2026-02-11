@@ -304,6 +304,17 @@ ERB 템플릿은 `<% %>` 를 통해 ruby 문법을 사용해서 뷰를 표현할
 ```
 그래서 위와 같이 동적으로 하이퍼링크를 생성해 각 제품 페이지로 이동하게 만들 수 있습니다.
 
+```html
+<div id="products">
+  <% @products.each do |product| %>
+    <div>
+      <%= link_to product.name, product_path(product.id)%>
+    </div>
+  <% end %>
+</div>
+```
+그리고, `link_to` 헬퍼를 통해 더 깔끔하게 리팩토링 할 수 있습니다.
+
 
 
 ---
