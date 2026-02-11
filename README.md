@@ -385,7 +385,7 @@ end
 의 형태로 에러가 발생했을 시 화면에 표시해줄 수 있습니다. 
 
 #### partial
-Django/FE 에서의 component 개념과 동일하다.
+Django/FE 에서의 component 개념과 동일합니다.
 
 ```html
 # app/views/products/_form.html.erb
@@ -404,7 +404,7 @@ Django/FE 에서의 component 개념과 동일하다.
   </div>
 <% end %>
 ```
-로 선언해두면, 다른 뷰에서 해당 partial을 랜더링하는 방식으로 사용할 수 있다. 
+로 선언해두면, 다른 뷰에서 해당 partial을 랜더링하는 방식으로 사용할 수 있습니다. 
 
 ```html
 # app/views/products/new.html.erb
@@ -414,7 +414,20 @@ Django/FE 에서의 component 개념과 동일하다.
 <%= render "form", product: @product %>
 <%= link_to "Cancel", products_path %>
 ```
-해당 방식으로 랜더링할 수 있고, 이를 통해 자주 사용하는 형태의 경우 재사용할 수 있다.
+해당 방식으로 랜더링할 수 있고, 이를 통해 자주 사용하는 형태의 경우 재사용할 수 있습니다.
 
 ---
 
+#### UPDATE
+
+partial로 공통 form 형태를 선언해 둔 덕분에,  
+edit은 create와 거의 같은 형태로 구성할 수 있습니다. 
+
+```html
+<h1>Edit Product</h1>
+
+<%= render "form", product: @product %>
+<%= link_to "Cancel", @product %>
+```
+
+---
