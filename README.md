@@ -265,6 +265,7 @@ Running via Spring preloader in process 77876
 명령 실행 시 위와 같이 controller, erb, test-unit, helper, scss 파일을 각각 만들어줍니다.
 
 ---
+#### READ
 
 ```ruby
 # app/controllers/products_controller.rb
@@ -318,7 +319,7 @@ ERB 템플릿은 `<% %>` 를 통해 ruby 문법을 사용해서 뷰를 표현할
 그리고, `link_to` 헬퍼를 통해 더 깔끔하게 리팩토링 할 수 있습니다.
 
 ---
-
+#### CREATE
 create의 경우에도 동일한 방식으로 만들 수 있습니다 .
 
 ```html
@@ -364,6 +365,22 @@ class ProductsController < ApplicationController
     end
 end
 ```
-형태로 컨트롤러에 액션을 추가해 새 인스턴스를 만들 수 있다. 
+형태로 컨트롤러에 액션을 추가해 새 인스턴스를 만들 수 있습니다. 
 
 ---
+### 에러 처리
+
+폼 입력 중 Validtion 등을 통해 백엔드 로직에서 에러가 발생하는 경우,  
+`form.object.errors`에서 에러를 찾을 수 있습니다. 
+
+이를 통해 에러가 발생하는 경우
+```html
+<%= form_with model: product do |form| %>
+  <% if form.object.errors.any? %>
+    <p class="error"><%= form.object.errors.full_messages.first %> </p>
+  <% end %>
+  ...
+<% end %>
+```
+의 형태로 에러가 발생했을 시 화면에 표시해줄 수 있습니다. 
+
