@@ -530,3 +530,39 @@ Running via Spring preloader in process 34400
    -> 0.0047s
 == 20260211062542 CreateComments: migrated (0.0048s) ==========================
 ```
+
+---
+### 연관 관계에서의 경로 설정
+
+```ruby
+# config/routes.rb
+
+Rails.application.routes.draw do
+  root "products#index"
+
+  resources :products do
+    resources :comments
+  end
+end
+```
+이러한 형태로 routes에 정의를 하게 되면,  
+Rails는 products와 comments가 중첩 관계인 것을 확인하고,  
+중첩된 경로를 자동으로 설정해줍니다.
+
+이를 `bin/rails routes`를 통해 확인하면,
+```shell
+                Prefix Verb   URI Pattern                                                          Controller#Action
+                  root GET    /                                                                    products#index
+      product_comments GET    /products/:product_id/comments(.:format)                             comments#index
+                       POST   /products/:product_id/comments(.:format)                             comments#create
+   new_product_comment GET    /products/:product_id/comments/new(.:format)                         comments#new
+  edit_product_comment GET    /products/:product_id/comments/:id/edit(.:format)                    comments#edit
+       product_comment GET    /products/:product_id/comments/:id(.:format)                         comments#show
+                       PATCH  /products/:product_id/comments/:id(.:format)                         comments#update
+                       PUT    /products/:product_id/comments/:id(.:format)                         comments#update
+                       DELETE /products/:product_id/comments/:id(.:format)                         comments#destroy
+```
+와 같이, 각 `comment`가 특정 `product`에 종속되도록  
+중첩된 경로가 자동으로 설정된 것을 확인할 수 있습니다.
+
+---
