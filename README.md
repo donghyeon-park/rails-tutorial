@@ -273,7 +273,7 @@ class ProductsController < ApplicationController
 end
 ```
 
-``` ruby
+``` html
 # views/products/index.html.erb
 <h1>Products</h1>
 
@@ -287,3 +287,24 @@ end
 ```
 위의 컨트롤러 코드에서는 `index` 액션에서 `Product`의 모든 레코드를 조회해 `@products` 인스턴스 변수에 담도록 설정했습니다.  
 아래의 ERB 템플릿에서는 이 `@products`를 순회하면서, 각 `product`의 `name`을 출력하는 방식으로 화면을 구성합니다.
+
+ERB 템플릿은 `<% %>` 를 통해 ruby 문법을 사용해서 뷰를 표현할 수 있습니다. 
+```html
+<h1>Products</h1>
+
+<div id="products">
+  <% @products.each do |product| %>
+    <div>
+      <a href="products/<%= product.id %>">
+        <%= product.id %>번 제품: <%= product.name %>
+      </a>
+    </div>
+  <% end %>
+</div>
+```
+그래서 위와 같이 동적으로 하이퍼링크를 생성해 각 제품 페이지로 이동하게 만들 수 있습니다.
+
+
+
+---
+

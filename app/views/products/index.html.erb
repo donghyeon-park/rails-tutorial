@@ -3,7 +3,9 @@
 <div id="products">
   <% @products.each do |product| %>
     <div>
-      <%= product.name %>
+      <a href="products/<%= product.id %>">
+        <%= product.id %>번 제품: <%= product.name %>
+      </a>
     </div>
   <% end %>
 </div>
