@@ -498,13 +498,35 @@ delete 또한 `@product`의 조회 로직이 필요하므로
 
 <%= link_to "Edit", edit_product_path(@product) %>
 <%= link_to "Back to products", products_path %>
-<%= button_to "Delete", @product, method: :delete %>
-```
-여기서 공식 문서와 다른 점은,  
-공식 문서에서는 `data: { turbo_confirm: "Are you sure?" }`을 통해  
-확인 버튼은 만들었는데, 
 
-이 환경을 구성하기 위해 `webpacker`를 제거했고,  
-그 여파로 해당 로직이 제대로 작동하지 않아 우선 제거해두었습니다. 
+```
 
 ---
+## 인증
+> Rails 8.0 이후 추가된 기능입니다.  
+현재 버전에서는 사용이 불가해 넘어가겠습니다. 
+
+---
+## 1:N
+`bin/rails generate model Comment author:string body:text product:references`
+
+최초 Product 모델을 정의했던 명령어에서,  
+references 를 추가해 comment 모델을 만들었습니다.
+```shell
+Running via Spring preloader in process 30929
+      invoke  active_record
+      create    db/migrate/20260211062542_create_comments.rb
+      create    app/models/comment.rb
+      invoke    test_unit
+      create      test/models/comment_test.rb
+      create      test/fixtures/comments.yml
+```
+이 또한 마찬가지로 마이그레이션을 진행하면 정상적으로 반영됩니다.
+
+```shell
+Running via Spring preloader in process 34400
+== 20260211062542 CreateComments: migrating ===================================
+-- create_table(:comments)
+   -> 0.0047s
+== 20260211062542 CreateComments: migrated (0.0048s) ==========================
+```
