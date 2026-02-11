@@ -36,7 +36,7 @@ rosetta 기반 애플 실리콘 환경 및
 
 ---
 
-### 모델 생성
+## 모델 생성
 
 `bin/rails generate model Product name:string` 명령을 통해,  
 string 타입의 name이라는 속성을 가진 Product 테이블을 생성할 수 있습니다.
@@ -143,7 +143,7 @@ class Product < ApplicationRecord
             length: { minimum: 2, maximum: 8 }
 end
 ```
-위의 형태로 not null, unique, length 제약사항을 추가할 수 있다. 
+위의 형태로 컬럼에 not null, unique, length 제약사항을 추가할 수 있다. 
 
 다시 콘솔에서,
 ```ruby
@@ -160,4 +160,70 @@ Product.create(name: "김밥") # false, Name has already been taken
 Product.create(name: "국밥") # true
 
 Product.create(name: "알리오올리오파스타") # false, "Name is too long (maximum is 8 characters)"
+```
+
+## 요청
+
+### Routes
+
+`route`는 HTTP 메서드와 요청 path 쌍으로 이루어져 있고,  
+응답에 어떤 컨트롤러에서, 어떤 행동을 취할지를 명시합니다.
+
+```ruby
+# config/routes.rb 
+Rails.application.routes.draw do
+  get "/products", to: "products#index"
+end
+```
+해당 코드에서는 example.org/products 로 들어오는 GET 요청을 products#index 로 전달하겠다는 의미입니다. 
+Rails는 이를 해석해 ProductsController의 index를 호출하고,  
+그 결과로 적절한 응답을 클라이언트에게 반환합니다. 
+
+GET 외에도 다양한 사용법이 있습니다.
+```ruby
+# config/routes.rb 
+Rails.application.routes.draw do
+  get "/products", to: "products#index"
+
+  # post 메서드로 해당 주소에 요청 시, ProductsController.create를 호출하고, 응답을 반환합니다.
+  post "/products", to: "products#create"
+
+  # :id 형태로 파라미터를 받아올 수 있습니다. 
+  get "/products/:id", to: "products#show"
+
+  # patch 메서드로 id 파라미터를 가지고 ProductsController.update를 호출하고, 응답을 반환합니다. 
+  patch "/products/:id", to: "products#update"
+
+  # put 메서드로 id 파라미터를 가지고 ProductsController.update를 호출하고, 응답을 반환합니다.
+  put "/products/:id", to: "products#update"
+
+  # delete 메서드로 id 파라미터를 가지고 ProductsController.destroy를 호출하고, 응답을 반환합니다.
+  delete "/products/:id", to: "products#destroy"
+
+  # 이 외에도 자주 쓰이는 코드입니다.
+  get "/products/new", to: "products#new"
+  get "/products/:id/edit", to: "products#edit"
+end
+```
+
+위의 코드들을 각 모델들을 다룰 때마다 작성하는 것은 번거로우므로,  
+Rails는 이를 위해 숏컷을 만들어 두었습니다. 
+```ruby
+Rails.application.routes.draw do
+  resources :products
+end
+```
+이 코드가 상기한 코드와 같은 동작을 합니다. 
+
+`bin/rails routes` 를 통해 생성된 경로들을 확인할 수 있습니다. 
+```
+      Prefix Verb   URI Pattern                                                                                       Controller#Action
+    products GET    /products(.:format)                                                                               products#index
+             POST   /products(.:format)                                                                               products#create
+ new_product GET    /products/new(.:format)                                                                           products#new
+edit_product GET    /products/:id/edit(.:format)                                                                      products#edit
+     product GET    /products/:id(.:format)                                                                           products#show
+             PATCH  /products/:id(.:format)                                                                           products#update
+             PUT    /products/:id(.:format)                                                                           products#update
+             DELETE /products/:id(.:format)                                                                           products#destroy
 ```
