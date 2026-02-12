@@ -649,3 +649,35 @@ end
 `product`가 가진 모든 `comment`를 조회할 수 있는 뷰를 생성할 수 있습니다.
 
 ---
+
+## Concern
+concern은 django의 mixin과 유사한 기능을 합니다.
+
+Spring 에서 abstract BaseEntity를 만드는 것과 다르게,  
+여러 모듈을 섞어서 다중 상속과 비슷한 효과를 낼 수 있습니다. 
+
+만약 `product`의 상태를 visible과 hidden으로 나누어 관리하려고 한다면,  
+기본적으로 아래와 같이 코드를 작성할 수 있습니다. 
+
+```ruby
+# app/models/product.rb
+
+class Product < ApplicationRecord
+  has_many :comments
+  
+  validates :name, 
+            presence: true, 
+            uniqueness: true, 
+            length: { minimum: 2, maximum: 8 }
+  
+  VALID_STATUSES = %w[visible hidden]
+
+  validates :status, inclusion: { in: VALID_STATUSES }
+
+  def visible?
+    status == "visible"
+  end
+end
+```
+하지만 서비스가 커질 수록 공개 여부와 같은 로직은 다양한 모델에서 사용할 가능성이 높습니다.  
+Rails에서는 이를 concern으로 분리하여 재사용 가능한 모듈로 관리할 수 있습니다. 
