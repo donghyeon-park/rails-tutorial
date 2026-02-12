@@ -648,6 +648,78 @@ end
 이를 통해 `product`에 `comment`를 달고,  
 `product`가 가진 모든 `comment`를 조회할 수 있는 뷰를 생성할 수 있습니다.
 
+### orphan
+
+`product`가 `comment`를 가지고 있을 때 `product`를 삭제하려고 하는 경우,  
+`ConstraintException`이 발생합니다.
+
+연관관계의 부모 릴레이션을 삭제하여 고아 릴레이션이 생기는 경우를 방지하고 있는데,  
+이를 해결하기 위한 몇 가지의 방식이 있습니다. 
+
+#### 1. `dependent: :destroy`
+```ruby
+class Product < ApplicationRecord
+  include Visible
+  has_many :comments, dependent: :destroy
+  
+  validates :name, 
+            presence: true, 
+            uniqueness: true, 
+            length: { minimum: 2, maximum: 8 }
+end
+```
+해당 설정은 고아 객체를 cascade 형태로 삭제하는 설정입니다.  
+부모 `product` 모델을 삭제하면, 연관된 `comments` 레코드를 각 객체마다 `destroy` 메서드로 호출하여 제거합니다.  
+
+따라서 `Comment` 모델에 정의된 `before_destroy`, `after_destroy`와 같은 콜백도 모두 실행됩니다.  
+
+#### 2. `dependent: :delete_all`
+```ruby
+class Product < ApplicationRecord
+  has_many :comments, dependent: :delete_all
+end
+```
+destroy와 비슷하게 연관된 레코드를 한 번에 지우지만,  
+모델 레벨 콜백을 타지 않는다는 점이 가장 큰 차이입니다.
+
+DB레벨에서 `DELETE FROM...`을 바로 실행해 속도는 빠르지만,  
+`Comment`에 정의된 콜백 등 로직을 호출하지 않아  
+추가적인 부작용이 없거나 콜백이 없는 경우 사용할 수 있습니다. 
+
+#### 3. `dependent: :nullify`
+
+```ruby
+class Product < ApplicationRecord
+  has_many :comments, dependent: :nullfiy
+end
+```
+`product`가 삭제되면, 연관된 `comment`의 `product_id`가 `NULL`로 업데이트됩니다.  
+데이터를 유지하면서, 더 이상 특정 부모와 연결되지는 않아야 할 때 사용할 수 있습니다.  
+
+단, `product_id` 컬럼이 `NOT NULL` 제약을 가지고 있는 경우 충돌이 발생할 수 있습니다. 
+
+
+#### 4. `dependent: :restrict_with_exception/ :restrict_with_error`
+```ruby
+class Product < ApplicationRecord
+  has_many: :comments, dependent: :restrict_with_exception
+end
+```
+`restrict_with_exception`의 경우,  
+자식이 존재하는 상태에서 `product.destroy` 호출 시 예외를 발생시킵니다.  
+이는 트랜잭션 롤백으로 이어지며, 호출 측에서 예외를 핸들링해야 합니다.
+```ruby
+class Product < ApplicationRecord
+  has_many: :comments, dependent: :restrict_with_error
+end
+```
+`restrict_with_error`의 경우,  
+예외를 던지는 대신, `product.errors`에 에러를 추가하고, `destroy`를 실패시킵니다.  
+폼에서 "댓글이 남아있어 삭제할 수 없습니다."와 같은 메시지를 보여주고 싶을 때 유용합니다. 
+
+이 두가지 방식은 고아 객체가 생기는 걸 막는 가장 보수적인 선택지로,  
+삭제 전에 반드시 연관 관계를 정리해야할 때 사용합니다. 
+
 ---
 
 ## Concern

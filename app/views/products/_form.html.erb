@@ -8,6 +8,10 @@
   </div>
 
   <div>
+    <%= form.label :status %>: <%= form.select :status, ['visible', 'hidden'], selected: 'visible' %>
+  </div>
+
+  <div>
     <%= form.submit %>
   </div>
 <% end %>
