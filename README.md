@@ -681,3 +681,38 @@ end
 ```
 하지만 서비스가 커질 수록 공개 여부와 같은 로직은 다양한 모델에서 사용할 가능성이 높습니다.  
 Rails에서는 이를 concern으로 분리하여 재사용 가능한 모듈로 관리할 수 있습니다. 
+
+```ruby
+# app/models/concerns/visible.rb
+
+module Visible
+  extend ActiveSupport::Concern
+
+  VALID_STATUSES = %w[visible hidden]
+
+  included do
+    validates :status, inclusion: { in: VALID_STATUESES }
+  end
+
+  def hidden?
+    status == "hidden"
+  end
+end
+```
+그리고 model에서는 아래와 같이 수정하면 기본 코드와 동일하게 작동합니다. 
+```ruby
+# app/models/product.rb
+
+class Product < ApplicationRecord
+  include Visible
+  has_many :comments
+  
+  validates :name, 
+            presence: true, 
+            uniqueness: true, 
+            length: { minimum: 2, maximum: 8 }
+end
+```
+
+이후 `bin/rails generate migration AddStatusToProduct status:string` 명령을 통해  
+실제 DB에 status를 반영하면 정상적으로 작동합니다.

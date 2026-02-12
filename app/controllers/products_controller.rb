@@ -46,6 +46,6 @@ class ProductsController < ApplicationController
     def product_params
       # 해당 코드는 6.1.5.1 버전에서 사용되지 않음
       # params.expect(product: [ :name ])
-      params.require(:product).permit(:name)
+      params.require(:product).permit(:name, :status)
     end
 end
